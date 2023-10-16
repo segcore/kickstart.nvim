@@ -143,27 +143,44 @@ require('lazy').setup({
   },
 
   {
-    -- Theme inspired by Atom
-    'navarasu/onedark.nvim',
+    -- Light theme colorscheme
+    "catppuccin/nvim",
+    name = "catppuccin",
     priority = 1000,
-    config = function()
-      vim.cmd.colorscheme 'onedark'
-    end,
-  },
-
-  {
-    -- Set lualine as statusline
-    'nvim-lualine/lualine.nvim',
-    -- See `:help lualine.txt`
     opts = {
-      options = {
-        icons_enabled = false,
-        theme = 'onedark',
-        component_separators = '|',
-        section_separators = '',
+      flavour = "latte",
+      background = { -- :h background
+	      light = "latte",
+	      dark = "mocha",
+      },
+      transparent_background = false,
+      show_end_of_buffer = false,
+      term_colors = false,
+      dim_inactive = {
+        enabled = true,
+        shade = "dark",
+        percentage = 0.15,
       },
     },
+    config = function()
+      vim.cmd.colorscheme "catppuccin-latte"
+    end
   },
+
+  -- {
+  --   -- Set lualine as statusline
+  --   'nvim-lualine/lualine.nvim',
+  --   -- See `:help lualine.txt`
+  --   opts = {
+  --     options = {
+  --       icons_enabled = false,
+  --       theme = 'auto',
+  --       --theme = 'onelight',
+  --       component_separators = '|',
+  --       section_separators = '',
+  --     },
+  --   },
+  -- },
 
   {
     -- Add indentation guides even on blank lines
@@ -222,6 +239,10 @@ require('lazy').setup({
   --
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
   -- { import = 'custom.plugins' },
+
+  {
+    'christoomey/vim-tmux-navigator'
+  }
 }, {})
 
 -- [[ Setting options ]]
@@ -229,7 +250,7 @@ require('lazy').setup({
 -- NOTE: You can change these options as you wish!
 
 -- Set highlight on search
-vim.o.hlsearch = false
+vim.o.hlsearch = true
 
 -- Make line numbers default
 vim.wo.number = true
@@ -537,3 +558,20 @@ cmp.setup {
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
+
+-- Use ctrl-/ to hide the search results after a search (e.g. from /).
+-- Complementary to :hlsearch on
+vim.keymap.set('n', '<C-_>', function() vim.cmd [[ :noh ]] end, { desc = 'Hide search results' })
+
+
+vim.cmd([[
+" Move lines up and down with Alt-j, Alt-k in normal and visual modes
+" Use == and similar to auto-indent. gv to reselect visual lines
+nnoremap <A-j> :m .+1<CR>==
+nnoremap <A-k> :m .-2<CR>==
+inoremap <A-j> <Esc>:m .+1<CR>==gi
+inoremap <A-k> <Esc>:m .-2<CR>==gi
+vnoremap <A-j> :m '>+1<CR>gv=gv
+vnoremap <A-k> :m '<-2<CR>gv=gv
+]])
