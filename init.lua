@@ -143,53 +143,39 @@ require('lazy').setup({
   },
 
   {
-    -- Light theme colorscheme
     "catppuccin/nvim",
     name = "catppuccin",
     priority = 1000,
-    opts = {
-      flavour = "latte",
-      background = { -- :h background
-	      light = "latte",
-	      dark = "mocha",
-      },
-      transparent_background = false,
-      show_end_of_buffer = false,
-      term_colors = false,
-      dim_inactive = {
-        enabled = true,
-        shade = "dark",
-        percentage = 0.15,
-      },
-    },
     config = function()
-      vim.cmd.colorscheme "catppuccin-latte"
+      vim.cmd.colorscheme 'catppuccin-latte'
     end
   },
 
-  -- {
-  --   -- Set lualine as statusline
-  --   'nvim-lualine/lualine.nvim',
-  --   -- See `:help lualine.txt`
-  --   opts = {
-  --     options = {
-  --       icons_enabled = false,
-  --       theme = 'auto',
-  --       --theme = 'onelight',
-  --       component_separators = '|',
-  --       section_separators = '',
-  --     },
-  --   },
-  -- },
+  {
+    -- Set lualine as statusline
+    'nvim-lualine/lualine.nvim',
+    -- See `:help lualine.txt`
+    opts = {
+      options = {
+        icons_enabled = true,
+        theme = 'auto',
+        component_separators = '|',
+        section_separators = '',
+      },
+    },
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+    }
+  },
 
   {
     -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
     -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help indent_blankline.txt`
+    main = 'ibl',
     opts = {
-      char = '┊',
-      show_trailing_blankline_indent = false,
+      -- char = '┊',
     },
   },
 
@@ -527,7 +513,7 @@ cmp.setup {
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete {},
-    ['<CR>'] = cmp.mapping.confirm {
+    ['<C-r>'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     },
@@ -556,15 +542,12 @@ cmp.setup {
   },
 }
 
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
-
-
 -- Use ctrl-/ to hide the search results after a search (e.g. from /).
 -- Complementary to :hlsearch on
-vim.keymap.set('n', '<C-_>', function() vim.cmd [[ :noh ]] end, { desc = 'Hide search results' })
+vim.keymap.set('n', '<C-_>', function() vim.cmd(':noh') end, { desc = 'Hide search results' })
 
 
+-- Run vimscript
 vim.cmd([[
 " Move lines up and down with Alt-j, Alt-k in normal and visual modes
 " Use == and similar to auto-indent. gv to reselect visual lines
@@ -574,4 +557,26 @@ inoremap <A-j> <Esc>:m .+1<CR>==gi
 inoremap <A-k> <Esc>:m .-2<CR>==gi
 vnoremap <A-j> :m '>+1<CR>gv=gv
 vnoremap <A-k> :m '<-2<CR>gv=gv
+
+" Allow copy/paste to system clipboard
+let g:clipboard = {
+  \   'name': 'WslClipboard',
+  \   'copy': {
+  \      '+': 'clip.exe',
+  \      '*': 'clip.exe',
+  \    },
+  \   'paste': {
+  \      '+': 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+  \      '*': 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+  \   },
+  \   'cache_enabled': 0,
+  \ }
+
+" Load ~/.vimrc if required
+"set runtimepath^=~/.vim runtimepath+=~/.vim/after
+"let &packpath = &runtimepath
+"source ~/.vimrc
 ]])
+
+-- The line beneath this is called `modeline`. See `:help modeline`
+-- vim: ts=2 sts=2 sw=2 et
