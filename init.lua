@@ -246,9 +246,15 @@ require('lazy').setup({
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
   -- { import = 'custom.plugins' },
 
-  {
-    'christoomey/vim-tmux-navigator'
-  }
+  -- Navigate between tmux panes with ctrl-h/j/k/l
+  'christoomey/vim-tmux-navigator',
+
+  -- Vim practice with :VimBeGood
+  'ThePrimeagen/vim-be-good',
+
+  -- Surround [selection/motion] in quotes/<tags>, and delete surrounding ..
+  -- "tpope/vim-surround",
+  { "kylechui/nvim-surround", opts = {} },
 }, {})
 
 -- [[ Setting options ]]
@@ -260,6 +266,7 @@ vim.o.hlsearch = true
 
 -- Make line numbers default
 vim.wo.number = true
+vim.wo.relativenumber = true
 
 -- Enable mouse mode
 vim.o.mouse = 'a'
