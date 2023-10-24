@@ -238,8 +238,19 @@ require('lazy').setup({
   'ThePrimeagen/vim-be-good',
 
   -- Surround [selection/motion] in quotes/<tags>, and delete surrounding ..
-  -- "tpope/vim-surround",
+  -- add: ysiw"   delete:  ds"    change:  cs"'
   { "kylechui/nvim-surround", opts = {} },
+
+  -- Jump to earlier files
+  {
+    'ThePrimeagen/harpoon',
+    dependencies = {
+      'nvim-lua/plenary.nvim'
+    }
+  },
+
+  -- Jump to last position when re-opening file
+  { 'ethanholz/nvim-lastplace', opts = {} },
 }, {})
 
 -- [[ Setting options ]]
@@ -577,6 +588,14 @@ cmp.setup {
 -- Complementary to :hlsearch on
 vim.keymap.set('n', '<C-_>', function() vim.cmd(':noh') end, { desc = 'Hide search results' })
 
+vim.keymap.set('n', '<leader>ha', require('harpoon.mark').add_file, { desc = 'Harpoon: [a]dd file' })
+vim.keymap.set('n', '<leader>hs', require('harpoon.ui').toggle_quick_menu, { desc = 'Harpoon: [s]how UI' })
+vim.keymap.set('n', '<leader>hk', require('harpoon.ui').nav_next, { desc = 'Harpoon: next mark' })
+vim.keymap.set('n', '<leader>hj', require('harpoon.ui').nav_prev, { desc = 'Harpoon: prev mark' })
+vim.keymap.set('n', '<leader>hq', function() require('harpoon.ui').nav_file(1) end, { desc = 'Harpoon: file 1' })
+vim.keymap.set('n', '<leader>hw', function() require('harpoon.ui').nav_file(2) end, { desc = 'Harpoon: file 2' })
+vim.keymap.set('n', '<leader>he', function() require('harpoon.ui').nav_file(3) end, { desc = 'Harpoon: file 3' })
+vim.keymap.set('n', '<leader>hr', function() require('harpoon.ui').nav_file(4) end, { desc = 'Harpoon: file 4' })
 
 -- Run vimscript
 vim.cmd([[
