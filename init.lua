@@ -608,6 +608,10 @@ inoremap <A-k> <Esc>:m .-2<CR>==gi
 vnoremap <A-j> :m '>+1<CR>gv=gv
 vnoremap <A-k> :m '<-2<CR>gv=gv
 
+" Keep visual selection when indenting
+vnoremap < <gv
+vnoremap > >gv
+
 " Allow copy/paste to system clipboard
 let g:clipboard = {
   \   'name': 'WslClipboard',
@@ -626,6 +630,9 @@ let g:clipboard = {
 "set runtimepath^=~/.vim runtimepath+=~/.vim/after
 "let &packpath = &runtimepath
 "source ~/.vimrc
+
+hi eolSpace ctermbg=238 guibg=#CCCCCC
+match eolSpace /\s\+$/
 ]])
 
 -- The line beneath this is called `modeline`. See `:help modeline`
