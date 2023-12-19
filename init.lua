@@ -37,6 +37,11 @@ I hope you enjoy your Neovim journey,
 
 P.S. You can delete this when you're done too. It's your config now :)
 --]]
+
+-- nvim-tree requests netrw be disabled asap
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
@@ -251,11 +256,43 @@ require('lazy').setup({
     'ThePrimeagen/harpoon',
     dependencies = {
       'nvim-lua/plenary.nvim'
+    },
+    opts = {
+      menu = {
+          width = 100,
+      }
     }
   },
 
   -- Jump to last position when re-opening file
   { 'ethanholz/nvim-lastplace', opts = {} },
+
+  -- File browser
+  {
+    'nvim-tree/nvim-tree.lua',
+    dependencies = {
+      'nvim-tree/nvim-web-devicons'
+    },
+    opts = {
+      view = {
+        side = "right",
+        width = 43,
+      },
+      actions = {
+        open_file = {
+          quit_on_open = true,
+        },
+      },
+    },
+  },
+
+  -- Welcome screen
+  {
+    'goolord/alpha-nvim',
+    config = function()
+      require('alpha').setup(require('alpha.themes.startify').config)
+    end,
+  },
 }, {})
 
 -- [[ Setting options ]]
@@ -299,6 +336,9 @@ vim.o.completeopt = 'menuone,noselect'
 
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
+
+-- Keep some space at top and bottom of screen
+vim.o.scrolloff = 8
 
 -- [[ Basic Keymaps ]]
 
@@ -428,6 +468,8 @@ end, 0)
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
+vim.keymap.set('n', '[e', function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR }) end, { desc = 'Go to previous error message' })
+vim.keymap.set('n', ']e', function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR }) end, { desc = 'Go to next error message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
@@ -501,7 +543,7 @@ require('mason-lspconfig').setup()
 --  If you want to override the default filetypes that your language server will attach to you can
 --  define the property 'filetypes' to the map in question.
 local servers = {
-  -- clangd = {},
+  clangd = {},
   -- gopls = {},
   -- pyright = {},
   -- rust_analyzer = {},
@@ -595,12 +637,24 @@ vim.keymap.set('n', '<C-_>', function() vim.cmd(':noh') end, { desc = 'Hide sear
 
 vim.keymap.set('n', '<leader>ha', require('harpoon.mark').add_file, { desc = 'Harpoon: [a]dd file' })
 vim.keymap.set('n', '<leader>hs', require('harpoon.ui').toggle_quick_menu, { desc = 'Harpoon: [s]how UI' })
-vim.keymap.set('n', '<leader>hk', require('harpoon.ui').nav_next, { desc = 'Harpoon: next mark' })
-vim.keymap.set('n', '<leader>hj', require('harpoon.ui').nav_prev, { desc = 'Harpoon: prev mark' })
+vim.keymap.set('n', '<leader>hj', require('harpoon.ui').nav_next, { desc = 'Harpoon: next mark' })
+vim.keymap.set('n', '<leader>hk', require('harpoon.ui').nav_prev, { desc = 'Harpoon: prev mark' })
 vim.keymap.set('n', '<leader>hq', function() require('harpoon.ui').nav_file(1) end, { desc = 'Harpoon: file 1' })
 vim.keymap.set('n', '<leader>hw', function() require('harpoon.ui').nav_file(2) end, { desc = 'Harpoon: file 2' })
 vim.keymap.set('n', '<leader>he', function() require('harpoon.ui').nav_file(3) end, { desc = 'Harpoon: file 3' })
 vim.keymap.set('n', '<leader>hr', function() require('harpoon.ui').nav_file(4) end, { desc = 'Harpoon: file 4' })
+
+
+vim.keymap.set('n', '-', function()
+  require("nvim-tree.api").tree.toggle({ path = ".", find_file = true, update_root = true, focus = true })
+end, { desc = 'Toggle nvim-tree view' })
+
+-- ESC to go to normal mode from :terminal
+vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { desc = 'Normal mode from terminal' })
+
+-- Center on next/prev when searching with / n N
+vim.keymap.set('n', 'n', 'nzz', { desc = 'next search and center' })
+vim.keymap.set('n', 'N', 'Nzz', { desc = 'prev search and center' })
 
 -- Run vimscript
 vim.cmd([[
