@@ -130,13 +130,19 @@ require('lazy').setup({
         untracked    = { text = '┆' },
       },
       on_attach = function(bufnr)
-        vim.keymap.set('n', '<leader>gp', require('gitsigns').preview_hunk, { buffer = bufnr, desc = 'Preview git hunk' })
-        vim.keymap.set('n', '<leader>gs', require('gitsigns').stage_hunk, { buffer = bufnr, desc = 'Stage git hunk' })
-        vim.keymap.set('n', '<leader>gS', require('gitsigns').undo_stage_hunk, { buffer = bufnr, desc = 'Undo stage git hunk' })
-        vim.keymap.set('n', '<leader>gr', require('gitsigns').reset_hunk, { buffer = bufnr, desc = 'Reset git hunk' })
+        local gs = require('gitsigns')
+        gs.toggle_word_diff(true)
+        vim.keymap.set('n', '<leader>gp', gs.preview_hunk, { buffer = bufnr, desc = 'Preview git hunk' })
+        vim.keymap.set('n', '<leader>gs', gs.stage_hunk, { desc = 'Stage git hunk' })
+        vim.keymap.set('n', '<leader>gr', gs.reset_hunk, { buffer = bufnr, desc = 'Reset git hunk' })
+        vim.keymap.set('n', '<leader>gA', gs.stage_buffer, { buffer = bufnr, desc = 'Stage file' })
+        vim.keymap.set('n', '<leader>gR', gs.reset_buffer, { buffer = bufnr, desc = 'Reset file' })
+        vim.keymap.set('n', '<leader>gd', gs.toggle_deleted, { buffer = bufnr, desc = 'Toggle showing deleted content' })
+        vim.keymap.set('n', '<leader>gb', gs.toggle_current_line_blame, { buffer = bufnr, desc = 'Toggle git blame current line' })
+        vim.keymap.set('n', '<leader>gl', gs.toggle_linehl, { buffer = bufnr, desc = 'Toggle line highlight' })
+        vim.keymap.set('n', '<leader>gw', gs.toggle_word_diff, { buffer = bufnr, desc = 'Toggle word diff' })
 
         -- don't override the built-in and fugitive keymaps
-        local gs = package.loaded.gitsigns
         vim.keymap.set({ 'n', 'v' }, ']c', function()
           if vim.wo.diff then
             return ']c'
@@ -434,26 +440,54 @@ vim.defer_fn(function()
           ['if'] = '@function.inner',
           ['ac'] = '@class.outer',
           ['ic'] = '@class.inner',
+          ['al'] = '@loop.outer',
+          ['il'] = '@loop.inner',
+          ['in'] = '@number.inner',
+          ['an'] = '@number.inner', -- There is no number.outer
+          ['ib'] = '@block.inner',
+          ['ab'] = '@block.outer',
+          ['ir'] = '@return.inner',
+          ['ar'] = '@return.outer',
         },
       },
       move = {
         enable = true,
         set_jumps = true, -- whether to set jumps in the jumplist
         goto_next_start = {
+          [']a'] = '@parameter.inner',
           [']m'] = '@function.outer',
           [']]'] = '@class.outer',
+          [']l'] = '@loop.outer',
+          [']b'] = '@block.outer',
+          [']r'] = '@return.outer',
+          [']n'] = '@number.inner',
         },
         goto_next_end = {
+          [']A'] = '@parameter.outer',
           [']M'] = '@function.outer',
           [']['] = '@class.outer',
+          [']L'] = '@loop.outer',
+          [']B'] = '@block.outer',
+          [']R'] = '@return.outer',
+          [']N'] = '@number.inner',
         },
         goto_previous_start = {
+          ['[a'] = '@parameter.inner',
           ['[m'] = '@function.outer',
           ['[['] = '@class.outer',
+          ['[l'] = '@loop.outer',
+          ['[b'] = '@block.outer',
+          ['[r'] = '@return.outer',
+          ['[n'] = '@number.inner',
         },
         goto_previous_end = {
+          ['[A'] = '@parameter.outer',
           ['[M'] = '@function.outer',
           ['[]'] = '@class.outer',
+          ['[L'] = '@loop.outer',
+          ['[B'] = '@block.outer',
+          ['[R'] = '@return.outer',
+          ['[N'] = '@number.inner',
         },
       },
       swap = {
@@ -648,6 +682,9 @@ vim.keymap.set('n', '<leader>hw', function() require('harpoon.ui').nav_file(2) e
 vim.keymap.set('n', '<leader>he', function() require('harpoon.ui').nav_file(3) end, { desc = 'Harpoon: file 3' })
 vim.keymap.set('n', '<leader>hr', function() require('harpoon.ui').nav_file(4) end, { desc = 'Harpoon: file 4' })
 
+-- Not actually harpoon, but it does.. harpoon it.
+vim.keymap.set('n', '<leader>hi', ':e ~/.config/nvim/init.lua<cr>', { desc = 'Edit neovim config' })
+
 
 vim.keymap.set('n', '-', function()
   require("nvim-tree.api").tree.toggle({ path = ".", find_file = true, update_root = true, focus = true })
@@ -674,20 +711,6 @@ vnoremap <A-k> :m '<-2<CR>gv=gv
 " Keep visual selection when indenting
 vnoremap < <gv
 vnoremap > >gv
-
-" Allow copy/paste to system clipboard
-let g:clipboard = {
-  \   'name': 'WslClipboard',
-  \   'copy': {
-  \      '+': 'clip.exe',
-  \      '*': 'clip.exe',
-  \    },
-  \   'paste': {
-  \      '+': 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-  \      '*': 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-  \   },
-  \   'cache_enabled': 0,
-  \ }
 
 " Load ~/.vimrc if required
 "set runtimepath^=~/.vim runtimepath+=~/.vim/after
