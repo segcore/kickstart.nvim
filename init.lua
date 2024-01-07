@@ -131,7 +131,6 @@ require('lazy').setup({
       },
       on_attach = function(bufnr)
         local gs = require('gitsigns')
-        gs.toggle_word_diff(true)
         vim.keymap.set('n', '<leader>gp', gs.preview_hunk, { buffer = bufnr, desc = 'Preview git hunk' })
         vim.keymap.set('n', '<leader>gs', gs.stage_hunk, { desc = 'Stage git hunk' })
         vim.keymap.set('n', '<leader>gr', gs.reset_hunk, { buffer = bufnr, desc = 'Reset git hunk' })
@@ -375,6 +374,23 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
   defaults = {
+    layout_strategy = 'flex',
+    layout_config = {
+      height = 9999, -- use maximum height
+      width = 0.85,
+      horizontal = {
+        preview_cutoff = 100,
+        prompt_position = "bottom",
+      },
+      vertical = {
+        preview_cutoff = 40,
+        prompt_position = "bottom",
+      },
+      flex = {
+        flip_columns = 120,
+      },
+    },
+    use_less = false,
     mappings = {
       i = {
         ['<C-u>'] = false,
@@ -392,9 +408,9 @@ vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc =
 vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
 vim.keymap.set('n', '<leader>/', function()
   -- You can pass additional configuration to telescope to change theme, layout, etc.
-  require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+  require('telescope.builtin').current_buffer_fuzzy_find({
     winblend = 10,
-    previewer = false,
+    layout_config = { height = 0.8 },
   })
 end, { desc = '[/] Fuzzily search in current buffer' })
 
@@ -411,6 +427,10 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 -- Defer Treesitter setup after first render to improve startup time of 'nvim {filename}'
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
+    modules = {},
+    sync_install = false,
+    ignore_install = {},
+
     -- Add languages to be installed here that you want installed for treesitter
     ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash' },
 
@@ -640,7 +660,7 @@ cmp.setup {
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete {},
-    ['<C-r>'] = cmp.mapping.confirm {
+    ['<C-y>'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     },
@@ -696,6 +716,9 @@ vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { desc = 'Normal mode from terminal'
 -- Center on next/prev when searching with / n N
 vim.keymap.set('n', 'n', 'nzz', { desc = 'next search and center' })
 vim.keymap.set('n', 'N', 'Nzz', { desc = 'prev search and center' })
+
+-- visually select the last yanked or inserted text
+vim.keymap.set('n', 'gy', "`[v`]", { desc = "Select last inserted or yanked text" })
 
 -- Run vimscript
 vim.cmd([[
