@@ -129,10 +129,15 @@ require('lazy').setup({
         changedelete = { text = '~' },
         untracked    = { text = '┆' },
       },
+      -- diff_opts = {
+      --   algorithm = 'minimal',
+      --   linematch = 60,
+      -- },
       on_attach = function(bufnr)
         local gs = require('gitsigns')
         vim.keymap.set('n', '<leader>gp', gs.preview_hunk, { buffer = bufnr, desc = 'Preview git hunk' })
         vim.keymap.set('n', '<leader>gs', gs.stage_hunk, { desc = 'Stage git hunk' })
+        vim.keymap.set('n', '<leader>gS', gs.undo_stage_hunk, { desc = 'Undo stage git hunk' })
         vim.keymap.set('n', '<leader>gr', gs.reset_hunk, { buffer = bufnr, desc = 'Reset git hunk' })
         vim.keymap.set('n', '<leader>gA', gs.stage_buffer, { buffer = bufnr, desc = 'Stage file' })
         vim.keymap.set('n', '<leader>gR', gs.reset_buffer, { buffer = bufnr, desc = 'Reset file' })
@@ -413,6 +418,9 @@ vim.keymap.set('n', '<leader>/', function()
     layout_config = { height = 0.8 },
   })
 end, { desc = '[/] Fuzzily search in current buffer' })
+vim.keymap.set('n', '<leader>gtt', require('telescope.builtin').git_status, { desc = 'Telescope: git status' })
+vim.keymap.set('n', '<leader>gtb', require('telescope.builtin').git_branches, { desc = 'Telescope: git branches' })
+
 
 vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
 vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
@@ -524,12 +532,32 @@ vim.defer_fn(function()
 end, 0)
 
 -- Diagnostic keymaps
+
+--- Make a function which, when called, toggles between calling func1 and func2
+---@param func1 function First function to call
+---@param func2 function Second function to call
+---@param args table | nil The function arguments passed to the function, wrapped in a table.
+--- Functions are called as if func1(table.unpack(args))
+---@return function func function which will run func1(unpack(args)),
+--- then func2(unpack(args)), then func1...
+local function make_toggler(func1, func2, args)
+  local first = true
+  local delegate = function()
+    local func = first and func1 or func2
+    first = not first
+    return func(args and (unpack or table.unpack)(args))
+  end
+  return delegate
+end
+
+
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 vim.keymap.set('n', '[e', function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR }) end, { desc = 'Go to previous error message' })
 vim.keymap.set('n', ']e', function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR }) end, { desc = 'Go to next error message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+vim.keymap.set('n', '<leader>dh', make_toggler(vim.diagnostic.hide, vim.diagnostic.show), { desc = 'Hide document diagnostics toggle' })
 
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
