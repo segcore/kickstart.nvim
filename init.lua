@@ -466,8 +466,8 @@ vim.defer_fn(function()
           ['ia'] = '@parameter.inner',
           ['af'] = '@function.outer',
           ['if'] = '@function.inner',
-          ['ac'] = '@class.outer',
-          ['ic'] = '@class.inner',
+          ['ac'] = '@call.outer',
+          ['ic'] = '@call.inner',
           ['al'] = '@loop.outer',
           ['il'] = '@loop.inner',
           ['in'] = '@number.inner',
@@ -476,6 +476,8 @@ vim.defer_fn(function()
           ['ab'] = '@block.outer',
           ['ir'] = '@return.inner',
           ['ar'] = '@return.outer',
+          ['iv'] = '@conditional.inner',
+          ['av'] = '@conditional.outer',
         },
       },
       move = {
@@ -489,6 +491,7 @@ vim.defer_fn(function()
           [']b'] = '@block.outer',
           [']r'] = '@return.outer',
           [']n'] = '@number.inner',
+          [']v'] = '@conditional.inner',
         },
         goto_next_end = {
           [']A'] = '@parameter.outer',
@@ -498,6 +501,7 @@ vim.defer_fn(function()
           [']B'] = '@block.outer',
           [']R'] = '@return.outer',
           [']N'] = '@number.inner',
+          [']V'] = '@conditional.inner',
         },
         goto_previous_start = {
           ['[a'] = '@parameter.inner',
@@ -507,6 +511,7 @@ vim.defer_fn(function()
           ['[b'] = '@block.outer',
           ['[r'] = '@return.outer',
           ['[n'] = '@number.inner',
+          ['[v'] = '@conditional.outer',
         },
         goto_previous_end = {
           ['[A'] = '@parameter.outer',
@@ -516,6 +521,7 @@ vim.defer_fn(function()
           ['[B'] = '@block.outer',
           ['[R'] = '@return.outer',
           ['[N'] = '@number.inner',
+          ['[V'] = '@conditional.outer',
         },
       },
       swap = {
@@ -557,7 +563,7 @@ vim.keymap.set('n', '[e', function() vim.diagnostic.goto_prev({ severity = vim.d
 vim.keymap.set('n', ']e', function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR }) end, { desc = 'Go to next error message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
-vim.keymap.set('n', '<leader>dh', make_toggler(vim.diagnostic.hide, vim.diagnostic.show), { desc = 'Hide document diagnostics toggle' })
+vim.keymap.set('n', '<leader>dh', make_toggler(vim.diagnostic.disable, vim.diagnostic.enable), { desc = 'Toggle diagnostics on/off' })
 
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
