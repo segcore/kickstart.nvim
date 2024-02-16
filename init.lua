@@ -354,6 +354,13 @@ vim.o.termguicolors = true
 -- Keep some space at top and bottom of screen
 vim.o.scrolloff = 8
 
+-- Tab spacing
+-- NOTE: vim-sleuth auto-detects settings and may override. See |sleuth|
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
+vim.opt.expandtab = true
+
 -- [[ Basic Keymaps ]]
 
 -- Keymaps for better default experience
@@ -446,7 +453,7 @@ vim.defer_fn(function()
     auto_install = false,
 
     highlight = { enable = true },
-    indent = { enable = true },
+    indent = { enable = true, disable = { 'c', 'cpp' } },
     incremental_selection = {
       enable = true,
       keymaps = {
