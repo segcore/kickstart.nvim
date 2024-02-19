@@ -602,6 +602,7 @@ local on_attach = function(_, bufnr)
   -- See `:help K` for why this keymap
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
   nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+  vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = bufnr, desc = 'Hover Documentation' })
 
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -642,7 +643,11 @@ require('mason-lspconfig').setup()
 --  If you want to override the default filetypes that your language server will attach to you can
 --  define the property 'filetypes' to the map in question.
 local servers = {
-  clangd = {},
+  clangd = {
+    filetypes = {
+       	"c", "cpp", "objc", "objcpp", "cuda"
+    },
+  },
   -- gopls = {},
   -- pyright = {},
   -- rust_analyzer = {},
@@ -673,12 +678,17 @@ mason_lspconfig.setup {
 
 mason_lspconfig.setup_handlers {
   function(server_name)
-    require('lspconfig')[server_name].setup {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
-    }
+    local server = require('lspconfig')[server_name]
+    if server and server.setup then
+      server.setup {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        settings = servers[server_name],
+        filetypes = (servers[server_name] or {}).filetypes,
+      }
+    else
+      print("Unhandled server " .. server_name)
+    end
   end,
 }
 
@@ -760,6 +770,13 @@ vim.keymap.set('n', 'N', 'Nzz', { desc = 'prev search and center' })
 
 -- visually select the last yanked or inserted text
 vim.keymap.set('n', 'gy', "`[v`]", { desc = "Select last inserted or yanked text" })
+
+-- Training wheels
+local function training_wheels() print("No arrow keys!") end
+vim.keymap.set('n', '<Up>', training_wheels, { desc = "Training wheels" })
+vim.keymap.set('n', '<Down>', training_wheels, { desc = "Training wheels" })
+vim.keymap.set('n', '<Left>', training_wheels, { desc = "Training wheels" })
+vim.keymap.set('n', '<Right>', training_wheels, { desc = "Training wheels" })
 
 -- Run vimscript
 vim.cmd([[
