@@ -135,16 +135,25 @@ require('lazy').setup({
       -- },
       on_attach = function(bufnr)
         local gs = require('gitsigns')
+        local function get_selected_line_range()
+          return { vim.fn.line("v"), vim.fn.line(".") }
+        end
+        local function stage_selected()
+          gs.stage_hunk(get_selected_line_range())
+        end
         vim.keymap.set('n', '<leader>gp', gs.preview_hunk, { buffer = bufnr, desc = 'Preview git hunk' })
         vim.keymap.set('n', '<leader>gs', gs.stage_hunk, { desc = 'Stage git hunk' })
+        vim.keymap.set('v', '<leader>gs', stage_selected, { desc = 'Stage git hunk in selection' })
         vim.keymap.set('n', '<leader>gS', gs.undo_stage_hunk, { desc = 'Undo stage git hunk' })
         vim.keymap.set('n', '<leader>gr', gs.reset_hunk, { buffer = bufnr, desc = 'Reset git hunk' })
         vim.keymap.set('n', '<leader>gA', gs.stage_buffer, { buffer = bufnr, desc = 'Stage file' })
+        vim.keymap.set('n', '<leader>gU', gs.reset_buffer_index, { buffer = bufnr, desc = 'Unstage file' })
         vim.keymap.set('n', '<leader>gR', gs.reset_buffer, { buffer = bufnr, desc = 'Reset file' })
         vim.keymap.set('n', '<leader>gd', gs.toggle_deleted, { buffer = bufnr, desc = 'Toggle showing deleted content' })
         vim.keymap.set('n', '<leader>gb', gs.toggle_current_line_blame, { buffer = bufnr, desc = 'Toggle git blame current line' })
         vim.keymap.set('n', '<leader>gl', gs.toggle_linehl, { buffer = bufnr, desc = 'Toggle line highlight' })
         vim.keymap.set('n', '<leader>gw', gs.toggle_word_diff, { buffer = bufnr, desc = 'Toggle word diff' })
+        vim.keymap.set('n', '<leader>gv', gs.select_hunk, { buffer = bufnr, desc = 'Select git hunk' })
 
         -- don't override the built-in and fugitive keymaps
         vim.keymap.set({ 'n', 'v' }, ']c', function()
@@ -557,6 +566,7 @@ local function make_toggler(func1, func2, args)
   local first = true
   local delegate = function()
     local func = first and func1 or func2
+    print("Toggled " .. (first and 'off' or 'on'))
     first = not first
     return func(args and (unpack or table.unpack)(args))
   end
