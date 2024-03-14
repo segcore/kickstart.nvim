@@ -95,8 +95,10 @@ vim.keymap.set('n', '<C-_>', '<cmd>nohlsearch<CR>', { desc = 'Hide search result
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
-vim.keymap.set('n', '[e', function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR }) end, { desc = 'Go to previous error message' })
-vim.keymap.set('n', ']e', function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR }) end, { desc = 'Go to next error message' })
+vim.keymap.set('n', '[e', function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR }) end,
+  { desc = 'Go to previous error message' })
+vim.keymap.set('n', ']e', function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR }) end,
+  { desc = 'Go to next error message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 vim.keymap.set('n', '<leader>dh', (function()
@@ -298,14 +300,13 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>st', builtin.builtin, { desc = '[S]earch [T]elescope' })
       vim.keymap.set('n', '<leader>si', function()
         builtin.find_files({ cwd = vim.fn.stdpath('config') })
-      end , { desc = '[S]earch neovim configuration' })
+      end, { desc = '[S]earch neovim configuration' })
       vim.keymap.set('n', '<leader>s/', function()
         builtin.live_grep {
           grep_open_files = true,
           prompt_title = 'Live Grep in Open Files',
         }
       end, { desc = '[S]earch [/] in Open Files' })
-
     end
   },
 
@@ -475,7 +476,6 @@ require('lazy').setup({
       'folke/neodev.nvim',
     },
     config = function()
-
       -- Setup neovim lua configuration
       require('neodev').setup()
 
@@ -528,7 +528,6 @@ require('lazy').setup({
               callback = vim.lsp.buf.clear_references,
             })
           end
-
         end,
       })
 
@@ -596,10 +595,10 @@ require('lazy').setup({
       require('mason-tool-installer').setup({ ensure_installed = ensure_installed })
 
       local on_attach = function(_, bufnr)
-          -- Create a command `:Format` local to the LSP buffer
-          vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
-            vim.lsp.buf.format()
-          end, { desc = 'Format current buffer with LSP' })
+        -- Create a command `:Format` local to the LSP buffer
+        vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
+          vim.lsp.buf.format()
+        end, { desc = 'Format current buffer with LSP' })
       end
 
       require('mason-lspconfig').setup({
@@ -617,7 +616,6 @@ require('lazy').setup({
           end,
         },
       })
-
     end
   },
 
@@ -697,7 +695,8 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',
+  {
+    'folke/which-key.nvim',
     event = 'VeryLazy',
     config = function()
       require('which-key').setup()
@@ -717,10 +716,10 @@ require('lazy').setup({
     opts = {
       -- See `:help gitsigns.txt`
       signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '×' },
-        topdelete = { text = '‾' },
+        add          = { text = '+' },
+        change       = { text = '~' },
+        delete       = { text = '×' },
+        topdelete    = { text = '‾' },
         changedelete = { text = '~' },
         untracked    = { text = '┆' },
       },
@@ -745,7 +744,8 @@ require('lazy').setup({
         vim.keymap.set('n', '<leader>gU', gs.reset_buffer_index, { buffer = bufnr, desc = 'Unstage file' })
         vim.keymap.set('n', '<leader>gR', gs.reset_buffer, { buffer = bufnr, desc = 'Reset file' })
         vim.keymap.set('n', '<leader>gd', gs.toggle_deleted, { buffer = bufnr, desc = 'Toggle showing deleted content' })
-        vim.keymap.set('n', '<leader>gb', gs.toggle_current_line_blame, { buffer = bufnr, desc = 'Toggle git blame current line' })
+        vim.keymap.set('n', '<leader>gb', gs.toggle_current_line_blame,
+          { buffer = bufnr, desc = 'Toggle git blame current line' })
         vim.keymap.set('n', '<leader>gl', gs.toggle_linehl, { buffer = bufnr, desc = 'Toggle line highlight' })
         vim.keymap.set('n', '<leader>gw', gs.toggle_word_diff, { buffer = bufnr, desc = 'Toggle word diff' })
         vim.keymap.set('n', '<leader>gv', gs.select_hunk, { buffer = bufnr, desc = 'Select git hunk' })
