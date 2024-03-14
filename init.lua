@@ -413,7 +413,12 @@ vim.opt.splitright = true
 -- Show pending subsitutions in a small split window
 vim.opt.inccommand = 'split'
 
+-- Highlight the line that the curson is on
 vim.opt.cursorline = true
+
+-- Show whitespace characters
+vim.opt.list = true
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣', space = ' ' }
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
@@ -438,8 +443,8 @@ vim.opt.expandtab = true
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
 -- Remap for dealing with word wrap
-vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
-vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+-- vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+-- vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -815,6 +820,7 @@ cmp.setup {
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
+    { name = 'buffer' },
   },
 }
 
@@ -832,7 +838,7 @@ vim.keymap.set('n', '<leader>he', function() require('harpoon.ui').nav_file(3) e
 vim.keymap.set('n', '<leader>hr', function() require('harpoon.ui').nav_file(4) end, { desc = 'Harpoon: file 4' })
 
 -- Not actually harpoon, but it does.. harpoon it.
-vim.keymap.set('n', '<leader>hi', ':e ~/.config/nvim/init.lua<cr>', { desc = 'Edit neovim config' })
+vim.keymap.set('n', '<leader>hi', ':e $MYVIMRC<cr>', { desc = 'Edit neovim config' })
 
 
 vim.keymap.set('n', '-', function()
