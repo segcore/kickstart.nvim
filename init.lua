@@ -82,6 +82,29 @@ vim.opt.shiftwidth = 4
 vim.opt.softtabstop = 4
 vim.opt.expandtab = true
 
+-- [[ Clip board ]]
+-- Immediately set clipboard on Windows, to not delay startup time
+-- Taken from /usr/local/share/nvim/runtime/autoload/provider/clipboard.vim
+local win32yank = vim.fn.exepath('win32yank.exe')
+if win32yank and #win32yank > 0 then
+  if vim.fn.has('wsl') and vim.fn.getftype(win32yank) == 'link' then
+    win32yank = vim.fn.resolve(win32yank)
+  end
+  vim.g.clipboard = {
+    name = 'win32yank-wsl',
+    copy = {
+      ['+'] = { win32yank, '-i', '--crlf' },
+      ['*'] = { win32yank, '-i', '--crlf' },
+    },
+    paste = {
+      ['+'] = { win32yank, '-o', '--lf' },
+      ['*'] = { win32yank, '-o', '--lf' },
+    },
+    cache_enabled = 1,
+  }
+end
+
+
 -- [[ Basic Keymaps ]]
 
 -- Remap for word wrap
@@ -465,6 +488,7 @@ require('lazy').setup({
   {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
+    event = 'VeryLazy',
     dependencies = {
       -- Automatically install LSPs to stdpath for neovim
       'williamboman/mason.nvim',
@@ -846,7 +870,8 @@ require('lazy').setup({
         },
       },
     },
-    config = function()
+    config = function(_, opts)
+      require('nvim-tree').setup(opts)
       vim.keymap.set('n', '-', function()
         require("nvim-tree.api").tree.toggle({ path = ".", find_file = true, update_root = true, focus = true })
       end, { desc = 'Toggle nvim-tree view' })
