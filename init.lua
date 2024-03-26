@@ -305,39 +305,44 @@ require('lazy').setup({
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
 
-      local builtin = require('telescope.builtin')
-      vim.keymap.set('n', '<leader>?', builtin.oldfiles, { desc = '[?] Find recently opened files' })
-      vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      -- Wrap the function and call it with the options
+      local function ww(func, opts)
+        return function() func(opts) end
+      end
+      local bi = require('telescope.builtin')
 
-      vim.keymap.set('n', '<leader>/', function()
-        builtin.current_buffer_fuzzy_find({
-          winblend = 10,
-          layout_config = { height = 0.8 },
-        })
-      end, { desc = '[/] Fuzzily search in current buffer' })
+      vim.keymap.set('n', '<leader>?', ww(bi.oldfiles, { sort_mru = true }), { desc = '[?] Find recently opened files' })
+      vim.keymap.set('n', '<leader><leader>', bi.buffers, { desc = '[ ] Find existing buffers' })
 
-      vim.keymap.set('n', '<leader>gt', builtin.git_status, { desc = 'Telescope: git status' })
-      vim.keymap.set('n', '<leader>gB', builtin.git_branches, { desc = 'Telescope: git branches' })
+      vim.keymap.set('n', '<leader>/', ww(bi.current_buffer_fuzzy_find, {
+        winblend = 10,
+        layout_config = { height = 0.8 },
+      }), { desc = '[/] Fuzzily search in current buffer' })
 
-
-      vim.keymap.set('n', '<leader>gf', builtin.git_files, { desc = 'Search [G]it [F]iles' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-      vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-      vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-      vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader>st', builtin.builtin, { desc = '[S]earch [T]elescope' })
-      vim.keymap.set('n', '<leader>si', function()
-        builtin.find_files({ cwd = vim.fn.stdpath('config') })
-      end, { desc = '[S]earch neovim configuration' })
-      vim.keymap.set('n', '<leader>s/', function()
-        builtin.live_grep {
-          grep_open_files = true,
-          prompt_title = 'Live Grep in Open Files',
-        }
-      end, { desc = '[S]earch [/] in Open Files' })
+      vim.keymap.set('n', '<leader>gt', bi.git_status, { desc = 'Telescope: git status' })
+      vim.keymap.set('n', '<leader>gB', bi.git_branches, { desc = 'Telescope: git branches' })
+      vim.keymap.set('n', '<leader>gf', bi.git_files, { desc = 'Search [G]it [F]iles' })
+      vim.keymap.set('n', '<leader>sf', ww(bi.find_files, { hidden = true }), { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>sF', ww(bi.find_files, { hidden = true, no_ignore = true, no_ignore_parent = true }),
+        { desc = '[S]earch [F]iles, include ignored' })
+      vim.keymap.set('n', '<leader>sh', bi.help_tags, { desc = '[S]earch [H]elp' })
+      vim.keymap.set('n', '<leader>sk', bi.keymaps, { desc = '[S]earch [K]eymaps' })
+      vim.keymap.set('n', '<leader>sw', ww(bi.grep_string, { additional_args = { '--hidden' } }),
+        { desc = '[S]earch current [W]ord' })
+      vim.keymap.set('n', '<leader>ss', bi.treesitter, { desc = '[S]earch tree-sitter [S]ymbols' })
+      vim.keymap.set('n', '<leader>sm', ww(bi.man_pages, { sections = { "ALL" } }), { desc = '[S]earch [M]an-pages' })
+      vim.keymap.set('n', '<leader>sg', bi.live_grep, { desc = '[S]earch by [G]rep' })
+      vim.keymap.set('n', '<leader>sd', bi.diagnostics, { desc = '[S]earch [D]iagnostics' })
+      vim.keymap.set('n', '<leader>sr', bi.resume, { desc = '[S]earch [R]esume' })
+      vim.keymap.set('n', '<leader>s"', bi.registers, { desc = '[S]earch registers' })
+      vim.keymap.set('n', '<leader>sj', bi.jumplist, { desc = '[S]earch [J]umplist' })
+      vim.keymap.set('n', '<leader>st', bi.builtin, { desc = '[S]earch [T]elescope' })
+      vim.keymap.set('n', '<leader>si', ww(bi.find_files, { cwd = vim.fn.stdpath('config') }),
+        { desc = '[S]earch neovim configuration' })
+      vim.keymap.set('n', '<leader>s/', ww(bi.live_grep, {
+        grep_open_files = true,
+        prompt_title = 'Live Grep in Open Files',
+      }), { desc = '[S]earch [/] in Open Files' })
     end
   },
 
