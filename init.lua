@@ -241,6 +241,12 @@ require('lazy').setup({
     priority = 1000,
     init = function()
       vim.cmd.colorscheme 'catppuccin-latte'
+
+      vim.cmd([[
+      hi LspReferenceText  guibg=#afdcfa
+      hi LspReferenceRead  guibg=#92f7aa
+      hi LspReferenceWrite guibg=#88e39e
+      ]])
     end,
   },
 
@@ -796,6 +802,11 @@ require('lazy').setup({
         end, { expr = true, buffer = bufnr, desc = 'Jump to previous hunk' })
       end,
     },
+  },
+
+  -- Run stuff in the background like :Make. :Copen to see the results
+  {
+    'tpope/vim-dispatch',
   },
 
   -- Vim practice with :VimBeGood
