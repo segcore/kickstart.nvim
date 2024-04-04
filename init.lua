@@ -102,6 +102,8 @@ if win32yank and #win32yank > 0 then
     },
     cache_enabled = 1,
   }
+else
+  print("No win32yank")
 end
 
 
@@ -336,6 +338,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', bi.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s"', bi.registers, { desc = '[S]earch registers' })
       vim.keymap.set('n', '<leader>sj', bi.jumplist, { desc = '[S]earch [J]umplist' })
+      vim.keymap.set('n', '<leader>sT', bi.tagstack, { desc = '[S]earch [T]agstack' })
       vim.keymap.set('n', '<leader>st', bi.builtin, { desc = '[S]earch [T]elescope' })
       vim.keymap.set('n', '<leader>si', ww(bi.find_files, { cwd = vim.fn.stdpath('config') }),
         { desc = '[S]earch neovim configuration' })
@@ -378,7 +381,12 @@ require('lazy').setup({
       {
         'nvim-treesitter/nvim-treesitter-context',
         config = function()
-          require('treesitter-context').setup()
+          require('treesitter-context').setup({
+            max_lines = 15,
+            -- min_window_height = 25,
+            -- multiline_threshold = 20,
+            trim_scope = 'inner',
+          })
 
           vim.keymap.set('n', '<leader>ce', '<cmd>TSContextEnable<CR>', { desc = 'Function context enable' })
           vim.keymap.set('n', '<leader>cd', '<cmd>TSContextDisable<CR>', { desc = 'Function context disable' })
@@ -676,6 +684,7 @@ require('lazy').setup({
       'saadparwaiz1/cmp_luasnip',
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
+      'hrsh7th/cmp-nvim-lsp-signature-help',
       'rafamadriz/friendly-snippets',
     },
     config = function()
@@ -721,6 +730,7 @@ require('lazy').setup({
           -- ['<S-Tab>'] = cmp.mapping(prev_snippet_node, { 'i', 's' }),
         },
         sources = {
+          { name = 'nvim_lsp_signature_help' }, -- show the parameter type and name when inserting
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
