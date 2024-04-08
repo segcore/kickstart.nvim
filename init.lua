@@ -903,6 +903,24 @@ require('lazy').setup({
     end,
   },
 
+  {
+    'segcore/build-selector.nvim',
+    opts = { simplify = false },
+    -- dir = '~/personal/build-selector',
+    config = function(_, opts)
+      local bs = require('build-selector')
+      bs.setup(opts)
+      vim.keymap.set('n', '<leader>b', bs.choose_default, { desc = 'Open build selector' })
+      vim.keymap.set('n', '<leader>B', function()
+        local choices = bs.choices()
+        choices = vim.tbl_filter(function(entry)
+          return string.match(entry, "docker")
+        end, choices)
+        bs.choose(choices)
+      end, { desc = 'Open build selector for docker builds' })
+    end,
+  },
+
   -- require 'kickstart.plugins.autoformat',
   -- require 'kickstart.plugins.debug',
 
