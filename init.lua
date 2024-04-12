@@ -298,7 +298,7 @@ require('lazy').setup({
         },
         extensions = {
           ['ui-select'] = {
-            require('telescope.themes').get_dropdown(),
+            require('telescope.themes').get_dropdown({ layout_config = { width = 130 } }),
           },
         },
       }
@@ -898,7 +898,7 @@ require('lazy').setup({
     config = function(_, opts)
       require('nvim-tree').setup(opts)
       vim.keymap.set('n', '-', function()
-        require("nvim-tree.api").tree.toggle({ path = ".", find_file = true, update_root = true, focus = true })
+        require("nvim-tree.api").tree.toggle({ path = ".", find_file = true, focus = true })
       end, { desc = 'Toggle nvim-tree view' })
     end,
   },
