@@ -82,6 +82,11 @@ vim.opt.shiftwidth = 4
 vim.opt.softtabstop = 4
 vim.opt.expandtab = true
 
+-- Default fold by { and } markers
+vim.opt.foldmethod = "marker"
+vim.opt.foldmarker = "{,}"
+vim.opt.foldlevel = 100
+
 -- [[ Clip board ]]
 -- Immediately set clipboard on Windows, to not delay startup time
 -- Taken from /usr/local/share/nvim/runtime/autoload/provider/clipboard.vim
