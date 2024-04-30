@@ -173,12 +173,35 @@ hi eolSpace ctermbg=238 guibg=#CCCCCC
 match eolSpace /\s\+$/
 ]])
 
+-- Clear whitespace at end of current line
+vim.keymap.set('n', '<leader>S', [[<cmd>s/\s\+$//e<CR>]], { desc = "Clear whitespace at end of line" })
+vim.keymap.set('v', '<leader>S', [[<Esc><cmd>'<,'>s/\s\+$//e<CR>]], { desc = "Clear whitespace at end of line" })
+
 -- Training wheels
 local function training_wheels() print("No arrow keys!") end
 vim.keymap.set('n', '<Up>', training_wheels, { desc = "Training wheels" })
 vim.keymap.set('n', '<Down>', training_wheels, { desc = "Training wheels" })
 vim.keymap.set('n', '<Left>', training_wheels, { desc = "Training wheels" })
 vim.keymap.set('n', '<Right>', training_wheels, { desc = "Training wheels" })
+
+-- Toggle error format for boost::test
+vim.keymap.set('n', '<leader>T', (function()
+  local format = '%f(%l):%.%# error: in %m'
+  local last = nil
+  return function()
+    local newformat
+    if last == nil then
+      newformat = format
+      last = vim.o.errorformat
+      -- vim.opt.errorformat:get() does not work
+    else
+      newformat = last
+      last = nil
+    end
+    print(string.format("vim.opt.errorformat = %q", newformat))
+    vim.opt.errorformat = newformat
+  end
+end)(), { desc = "Set errorformat for boost::test" })
 
 -- [[ Auto commands ]]
 --  See `:help lua-guide-autocommands`
@@ -697,7 +720,7 @@ require('lazy').setup({
         if luasnip.expand_or_locally_jumpable() then
           luasnip.expand_or_jump()
         else
-          fallback()
+          -- fallback() -- I don't want to add ^L and ^H deletes
         end
       end
 
@@ -705,7 +728,7 @@ require('lazy').setup({
         if luasnip.locally_jumpable(-1) then
           luasnip.jump(-1)
         else
-          fallback()
+          -- fallback() -- I don't want to add ^L and ^H deletes
         end
       end
 
