@@ -75,6 +75,9 @@ vim.opt.completeopt = 'menuone,noselect,preview'
 -- NOTE: You should make sure your terminal supports this
 vim.opt.termguicolors = true
 
+-- Help colourschemes out
+vim.opt.background = "light"
+
 -- Tab spacing
 -- NOTE: vim-sleuth auto-detects settings and may override. See |sleuth|
 vim.opt.tabstop = 4
@@ -555,7 +558,7 @@ require('lazy').setup({
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
           local nmap = function(keys, func, desc)
-            vim.keymap.set('n', keys, func, { buffer = bufnr, desc = 'LSP: ' .. desc })
+            vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
           nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
@@ -572,8 +575,8 @@ require('lazy').setup({
           -- See `:help K` for why this keymap
           nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
           nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
-          vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = bufnr, desc = 'Signature Documentation' })
-          vim.keymap.set('i', '<C-S-k>', vim.lsp.buf.hover, { buffer = bufnr, desc = 'Hover Documentation' })
+          vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = event.buf, desc = 'Signature Documentation' })
+          vim.keymap.set('i', '<C-S-k>', vim.lsp.buf.hover, { buffer = event.buf, desc = 'Hover Documentation' })
 
           -- Lesser used LSP functionality
           nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
