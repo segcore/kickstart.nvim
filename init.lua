@@ -38,6 +38,7 @@ vim.opt.clipboard = 'unnamedplus'
 
 -- Every wrapped line will continue visually indented
 vim.opt.breakindent = true
+vim.opt.showbreak = '     '
 
 -- Save undo history
 vim.opt.undofile = true
