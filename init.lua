@@ -118,13 +118,47 @@ end
 
 -- [[ Basic Keymaps ]]
 
+-- Self descriptive
+vim.keymap.set('n', '<leader>hh', function()
+  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({}))
+end, { desc = 'Toggle inlay hints' })
+vim.keymap.set('n', '<leader>hi', ':e $MYVIMRC<cr>', { desc = 'Edit neovim config' })
+vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Normal mode from terminal' })
+vim.keymap.set('n', 'n', 'nzz', { desc = 'next search and center' })
+vim.keymap.set('n', 'N', 'Nzz', { desc = 'prev search and center' })
+
 -- Remap for word wrap
 -- vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 -- vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 -- Use ctrl-/ to hide the search results after a search (e.g. from /).
--- Complementary to :hlsearch on
 vim.keymap.set('n', '<C-_>', '<cmd>nohlsearch<CR>', { desc = 'Hide search results' })
+-- visually select the last yanked or inserted text
+vim.keymap.set('n', 'gy', "`[v`]", { desc = "Select last inserted or yanked text" })
+
+-- Move lines up and down with Alt-j, Alt-k in normal and visual modes
+vim.keymap.set('n', '<A-j>', '<cmd>m .+1<CR>==', { desc = 'Move lines down one' })
+vim.keymap.set('n', '<A-k>', '<cmd>m .-2<CR>==', { desc = 'Move lines up one' })
+vim.keymap.set('i', '<A-j>', '<Esc>m .+1<CR>==gi', { desc = 'Move lines down one' })
+vim.keymap.set('i', '<A-k>', '<Esc>m .-2<CR>==gi', { desc = 'Move lines up one' })
+
+-- Run vimscript
+vim.cmd([[
+  " The marks do not appear to be set before the action in vim.keymap.set(), so leave them here
+  vnoremap <A-j> :m '>+1<CR>gv=gv
+  vnoremap <A-k> :m '<-2<CR>gv=gv
+
+  " Keep visual selection when indenting
+  vnoremap < <gv
+  vnoremap > >gv
+
+  hi eolSpace ctermbg=238 guibg=#CCCCCC
+  match eolSpace /\s\+$/
+]])
+
+-- Clear whitespace at end of current line
+vim.keymap.set('n', '<leader>S', [[<cmd>s/\s\+$//e<CR>]], { desc = "Clear whitespace at end of line" })
+vim.keymap.set('v', '<leader>S', [[<Esc><cmd>'<,'>s/\s\+$//e<CR>]], { desc = "Clear whitespace at end of line" })
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
@@ -139,52 +173,14 @@ vim.keymap.set('n', '<leader>dh', (function()
   local show = true
   return function()
     show = not show
+    vim.diagnostic.enable(show)
     if show then
-      vim.diagnostic.enable()
       print("Diagnostics enabled")
     else
-      vim.diagnostic.disable()
       print("Diagnostics disabled")
     end
   end
 end)(), { desc = 'Toggle diagnostics on/off' })
-
--- Edit neovim init.lua from anywhere!
-vim.keymap.set('n', '<leader>hi', ':e $MYVIMRC<cr>', { desc = 'Edit neovim config' })
-
--- 2x ESC to go to normal mode from :terminal
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Normal mode from terminal' })
-
--- Center on next/prev when searching with / n N
-vim.keymap.set('n', 'n', 'nzz', { desc = 'next search and center' })
-vim.keymap.set('n', 'N', 'Nzz', { desc = 'prev search and center' })
-
--- visually select the last yanked or inserted text
-vim.keymap.set('n', 'gy', "`[v`]", { desc = "Select last inserted or yanked text" })
-
--- Move lines up and down with Alt-j, Alt-k in normal and visual modes
-vim.keymap.set('n', '<A-j>', '<cmd>m .+1<CR>==', { desc = 'Move lines down one' })
-vim.keymap.set('n', '<A-k>', '<cmd>m .-2<CR>==', { desc = 'Move lines up one' })
-vim.keymap.set('i', '<A-j>', '<Esc>m .+1<CR>==gi', { desc = 'Move lines down one' })
-vim.keymap.set('i', '<A-k>', '<Esc>m .-2<CR>==gi', { desc = 'Move lines up one' })
-
--- Run vimscript
-vim.cmd([[
-" The marks do not appear to be set before the action in vim.keymap.set(), so leave them here
-vnoremap <A-j> :m '>+1<CR>gv=gv
-vnoremap <A-k> :m '<-2<CR>gv=gv
-
-" Keep visual selection when indenting
-vnoremap < <gv
-vnoremap > >gv
-
-hi eolSpace ctermbg=238 guibg=#CCCCCC
-match eolSpace /\s\+$/
-]])
-
--- Clear whitespace at end of current line
-vim.keymap.set('n', '<leader>S', [[<cmd>s/\s\+$//e<CR>]], { desc = "Clear whitespace at end of line" })
-vim.keymap.set('v', '<leader>S', [[<Esc><cmd>'<,'>s/\s\+$//e<CR>]], { desc = "Clear whitespace at end of line" })
 
 -- Training wheels
 local function training_wheels() print("No arrow keys!") end
@@ -211,6 +207,8 @@ vim.keymap.set('n', '<leader>T', (function()
     vim.opt.errorformat = newformat
   end
 end)(), { desc = "Set errorformat for boost::test" })
+
+
 
 -- [[ Auto commands ]]
 --  See `:help lua-guide-autocommands`
