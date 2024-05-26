@@ -963,7 +963,7 @@ require('lazy').setup({
   },
 
   -- require 'kickstart.plugins.autoformat',
-  -- require 'kickstart.plugins.debug',
+  require 'segcore.plugins.debug',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
