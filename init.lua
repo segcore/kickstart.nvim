@@ -958,11 +958,10 @@ require('lazy').setup({
 
   {
     'segcore/build-selector.nvim',
-    opts = { simplify = false },
     -- dir = '~/personal/build-selector',
-    config = function(_, opts)
+    config = function()
       local bs = require('build-selector')
-      bs.setup(opts)
+      bs.setup({ simplify = false})
       vim.keymap.set('n', '<leader>b', bs.choose_default, { desc = 'Open build selector' })
       vim.keymap.set('n', '<leader>B', function()
         local choices = bs.choices()
