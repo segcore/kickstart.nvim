@@ -59,7 +59,7 @@ vim.opt.splitright = true
 
 -- Show whitespace characters
 vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣', space = ' ' }
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
 -- Show pending subsitutions in a small split window
 vim.opt.inccommand = 'split'
@@ -153,7 +153,7 @@ vim.cmd([[
   vnoremap < <gv
   vnoremap > >gv
 
-  hi eolSpace ctermbg=238 guibg=#CCCCCC
+  hi eolSpace ctermbg=238 guibg=#e6e6e6 guifg=#bbbbbb
   match eolSpace /\s\+$/
 ]])
 
@@ -549,13 +549,21 @@ require('lazy').setup({
       -- Useful status updates for LSP
       { 'j-hui/fidget.nvim', tag = 'legacy', opts = {} },
 
-      -- Additional lua configuration for neovim functions
-      'folke/neodev.nvim',
+      -- Lua LS support
+      {
+        'folke/lazydev.nvim',
+        ft = 'lua',
+        opts = {
+          library = {
+            'luvit-meta/library',
+          },
+        },
+        dependencies = {
+          { 'Bilal2453/luvit-meta', lazy = true}, -- vim.uv types
+        },
+      }
     },
     config = function()
-      -- Setup neovim lua configuration
-      require('neodev').setup()
-
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
@@ -768,6 +776,7 @@ require('lazy').setup({
           { name = 'luasnip' },
           { name = 'path' },
           { name = 'buffer' },
+          { name = 'lazydev', group_index = 0 }, -- group_index 0 skips loading LuaLS completions
         },
       }
     end,
