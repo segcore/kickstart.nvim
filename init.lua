@@ -77,7 +77,7 @@ vim.opt.completeopt = 'menuone,noselect,preview'
 vim.opt.termguicolors = true
 
 -- Help colourschemes out
-vim.opt.background = "light"
+vim.opt_global.background = "light"
 
 -- Tab spacing
 -- NOTE: vim-sleuth auto-detects settings and may override. See |sleuth|
@@ -127,6 +127,9 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Normal mode from term
 vim.keymap.set('n', 'n', 'nzz', { desc = 'next search and center' })
 vim.keymap.set('n', 'N', 'Nzz', { desc = 'prev search and center' })
 vim.keymap.set('n', '<leader>F', '<cmd>let @+=@%<CR>', { desc = 'Copy filename to clipboard' })
+vim.keymap.set('n', 'gX', function() vim.ui.open(vim.api.nvim_buf_get_name(0)) end, { desc = 'Open current file with extenal program' })
+vim.keymap.set('n', '<leader>l', '<cmd>.lua<CR>', { desc = 'Run current line as Lua code' })
+vim.keymap.set('v', '<leader>l', [[<Esc><cmd>'<,'>lua<CR>]], { desc = 'Run selected lines as Lua code' })
 
 -- Remap for word wrap
 -- vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
