@@ -122,7 +122,11 @@ end
 vim.keymap.set('n', '<leader>hh', function()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({}))
 end, { desc = 'Toggle inlay hints' })
-vim.keymap.set('n', '<leader>hi', ':e $MYVIMRC<cr>', { desc = 'Edit neovim config' })
+vim.keymap.set('n', '<leader>hi', function()
+  vim.cmd([[tabedit $MYVIMRC
+  tcd %:h]])
+end, { desc = 'Edit neovim config in a new tab' })
+vim.keymap.set('n', '<leader>hI', ':e $MYVIMRC<cr>', { desc = 'Edit neovim config' })
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Normal mode from terminal' })
 vim.keymap.set('n', 'n', 'nzz', { desc = 'next search and center' })
 vim.keymap.set('n', 'N', 'Nzz', { desc = 'prev search and center' })
@@ -356,6 +360,7 @@ require('lazy').setup({
       }), { desc = '[/] Fuzzily search in current buffer' })
 
       vim.keymap.set('n', '<leader>gt', bi.git_status, { desc = 'Telescope: git status' })
+      vim.keymap.set('n', '<leader>gT', ww(bi.git_status, { cwd = vim.fs.dirname(vim.api.nvim_buf_get_name(0)), use_git_root = false }), { desc = 'Telescope: git status' })
       vim.keymap.set('n', '<leader>gB', bi.git_branches, { desc = 'Telescope: git branches' })
       vim.keymap.set('n', '<leader>gf', bi.git_files, { desc = 'Search [G]it [F]iles' })
       vim.keymap.set('n', '<leader>sf', ww(bi.find_files, { hidden = true }), { desc = '[S]earch [F]iles' })
@@ -363,6 +368,7 @@ require('lazy').setup({
         { desc = '[S]earch [F]iles, include ignored' })
       vim.keymap.set('n', '<leader>sh', bi.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', bi.keymaps, { desc = '[S]earch [K]eymaps' })
+      vim.keymap.set('n', '<leader>sc', ww(bi.colorscheme, { enable_preview = true }), { desc = '[S]earch [C]olourscheme' })
       vim.keymap.set('n', '<leader>sw', ww(bi.grep_string, { additional_args = { '--hidden' } }),
         { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>ss', bi.treesitter, { desc = '[S]earch tree-sitter [S]ymbols' })
@@ -375,6 +381,9 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>s"', bi.registers, { desc = '[S]earch registers' })
       vim.keymap.set('n', '<leader>sj', bi.jumplist, { desc = '[S]earch [J]umplist' })
       vim.keymap.set('n', '<leader>sT', bi.tagstack, { desc = '[S]earch [T]agstack' })
+      vim.keymap.set('n', '<leader>sq', bi.quickfix, { desc = '[S]earch [Q]uickfix list' })
+      vim.keymap.set('n', '<leader>sQ', bi.quickfixhistory, { desc = '[S]earch [Q]uickfix history' })
+      vim.keymap.set('n', '<leader>sl', bi.loclist, { desc = '[S]earch [L]ocation list' })
       vim.keymap.set('n', '<leader>st', bi.builtin, { desc = '[S]earch [T]elescope' })
       vim.keymap.set('n', '<leader>si', ww(bi.find_files, { cwd = vim.fn.stdpath('config') }),
         { desc = '[S]earch neovim configuration' })
@@ -402,6 +411,7 @@ require('lazy').setup({
           { 'filename', path = 1 },
         },
         lualine_x = { 'searchcount', 'filesize', 'encoding', 'fileformat', 'filetype' },
+        lualine_z = { 'selectioncount', 'location' }
       },
     },
     dependencies = {
