@@ -150,6 +150,13 @@ vim.keymap.set('n', '<A-k>', '<cmd>m .-2<CR>==', { desc = 'Move lines up one' })
 vim.keymap.set('i', '<A-j>', '<Esc>m .+1<CR>==gi', { desc = 'Move lines down one' })
 vim.keymap.set('i', '<A-k>', '<Esc>m .-2<CR>==gi', { desc = 'Move lines up one' })
 
+-- Jump within the quickfix list
+-- (uses cnext/cprev because cfirst and clast are not necessarily the 'real' errors, just the first and last lines)
+vim.keymap.set('n', '<A-C-h>', '<cmd>cfirst | cnext<CR>', { desc = 'First quickfix item' })
+vim.keymap.set('n', '<A-h>', '<cmd>cprev<CR>', { desc = 'Previous quickfix item' })
+vim.keymap.set('n', '<A-l>', '<cmd>cnext<CR>', { desc = 'Next quickfix item' })
+vim.keymap.set('n', '<A-C-l>', '<cmd>clast | cprev<CR>', { desc = 'Last quickfix item' })
+
 -- Run vimscript
 vim.cmd([[
   " The marks do not appear to be set before the action in vim.keymap.set(), so leave them here
