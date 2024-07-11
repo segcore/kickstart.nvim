@@ -126,6 +126,11 @@ vim.keymap.set('n', '<leader>hi', function()
   vim.cmd([[tabedit $MYVIMRC
   tcd %:h]])
 end, { desc = 'Edit neovim config in a new tab' })
+vim.keymap.set('n', '<leader>h.', function()
+  vim.cmd([[tabedit ~/.dotfiles/setup.sh
+  tcd %:h]])
+  require('telescope.builtin').find_files()
+end, { desc = 'Edit dotfiles in a new tab' })
 vim.keymap.set('n', '<leader>hI', ':e $MYVIMRC<cr>', { desc = 'Edit neovim config' })
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Normal mode from terminal' })
 vim.keymap.set('n', 'n', 'nzz', { desc = 'next search and center' })
