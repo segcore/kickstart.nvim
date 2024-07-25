@@ -176,6 +176,12 @@ vim.cmd([[
   match eolSpace /\s\+$/
 ]])
 
+-- Window resizing
+vim.keymap.set('n', '<M-,>', [[3<C-W><]], { desc = 'Make split narrower' })
+vim.keymap.set('n', '<M-.>', [[3<C-W>>]], { desc = 'Make split wider' })
+vim.keymap.set('n', '<M-m>', [[3<C-W>+]], { desc = 'Make split higher' })
+vim.keymap.set('n', '<M-/>', [[3<C-W>-]], { desc = 'Make split shorter' })
+
 -- Clear whitespace at end of current line
 vim.keymap.set('n', '<leader>S', [[<cmd>s/\s\+$//e<CR>]], { desc = "Clear whitespace at end of line" })
 vim.keymap.set('v', '<leader>S', [[<Esc><cmd>'<,'>s/\s\+$//e<CR>]], { desc = "Clear whitespace at end of line" })
