@@ -18,6 +18,7 @@ vim.g.maplocalleader = ' '
 -- Indicates that the terminal is using a nerd font
 -- Enables/disables some plugins and options within this config
 vim.g.have_nerd_font = true
+vim.g.is_wsl = vim.fn.has('wsl')
 
 -- [[ Setting options ]]
 
@@ -1004,35 +1005,30 @@ require('lazy').setup({
     end,
   },
 
+  { 'aklt/plantuml-syntax' },
+
   {
-    'javiorfo/nvim-soil',
-    -- Optional for puml syntax highlighting:
-    dependencies = { 'javiorfo/nvim-nyctophilia' },
-    lazy = true,
-    ft = "plantuml",
-    opts = {
-      -- If you want to change default configurations
-
-      -- If you want to use Plant UML jar version instead of the install version
-      -- puml_jar = "/path/to/plantuml.jar",
-
-      -- If you want to customize the image showed when running this plugin
-      image = {
-        darkmode = false,     -- Enable or disable darkmode
-        format = "png",       -- Choose between png or svg
-
-        -- This is a default implementation of using nsxiv to open the resultant image
-        -- Edit the string to use your preferred app to open the image (as if it were a command line)
-        -- Some examples:
-        -- return "feh " .. img
-        -- return "xdg-open " .. img
-        execute_to_open = function(img)
-          -- return "wslview " .. img
-          return "xdg-open " .. img
-        end
-      }
-    }
+    'iamcco/markdown-preview.nvim',
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    build = function() vim.fn["mkdp#util#install"]() end,
+    config = function()
+      if vim.g.is_wsl then
+        vim.cmd([[
+          function OpenMarkdownPreview (url)
+            execute "silent ! wslview " . a:url
+          endfunction
+          let g:mkdp_browserfunc = 'OpenMarkdownPreview'
+        ]])
+      end
+    end,
   },
+
+  -- Possibly for paste-selection next/forward
+  -- https://github.com/gbprod/yanky.nvim
+
+  -- https://github.com/kdheepak/lazygit.nvim
+  -- { 'kdheepak/lazygit.nvim' },
 
   -- require 'kickstart.plugins.autoformat',
   require 'segcore.plugins.debug',
