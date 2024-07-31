@@ -665,12 +665,13 @@ require('lazy').setup({
         },
         -- gopls = {},
         pylsp = {
-          -- TODO: probably need this in a sub-table called `settings`
-          pylsp = {
-            plugins = {
-              pycodestyle = {
-                -- ignore = {'W391'},
-                maxLineLength = 200,
+          settings = {
+            pylsp = {
+              plugins = {
+                pycodestyle = {
+                  -- ignore = {'W391'},
+                  maxLineLength = 200,
+                },
               },
             },
           },
