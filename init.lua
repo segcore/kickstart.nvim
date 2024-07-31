@@ -1024,6 +1024,11 @@ require('lazy').setup({
     end,
   },
 
+  {
+    'brenoprata10/nvim-highlight-colors',
+    opts = {},
+  },
+
   -- Possibly for paste-selection next/forward
   -- https://github.com/gbprod/yanky.nvim
 
