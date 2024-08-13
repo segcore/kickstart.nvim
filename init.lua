@@ -1012,15 +1012,16 @@ require('lazy').setup({
   {
     'iamcco/markdown-preview.nvim',
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-    ft = { "markdown" },
+    ft = { "markdown", "plantuml" },
     build = function() vim.fn["mkdp#util#install"]() end,
-    config = function()
+    init = function()
       if vim.g.is_wsl then
         vim.cmd([[
           function OpenMarkdownPreview (url)
             execute "silent ! wslview " . a:url
           endfunction
           let g:mkdp_browserfunc = 'OpenMarkdownPreview'
+          let g:mkdp_command_for_global = 1
         ]])
       end
     end,
