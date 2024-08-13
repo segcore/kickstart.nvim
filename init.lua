@@ -1029,7 +1029,9 @@ require('lazy').setup({
 
   {
     'brenoprata10/nvim-highlight-colors',
-    opts = {},
+    opts = {
+      enable_short_hex = false,
+    },
   },
 
   -- Possibly for paste-selection next/forward
