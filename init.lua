@@ -116,6 +116,9 @@ else
   print("No win32yank")
 end
 
+-- Filter the quickfix list with :Cfilter(!) /pattern/
+vim.cmd.packadd('cfilter')
+
 
 -- [[ Basic Keymaps ]]
 
@@ -614,9 +617,9 @@ require('lazy').setup({
           nmap('<leader>ds', tele.lsp_document_symbols, '[D]ocument [S]ymbols')
           nmap('<leader>ws', tele.lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
-          -- See `:help K` for why this keymap
-          nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-          nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+          -- This is now the default in neovim v0.10+
+          -- nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
+          nmap('<C-S-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
           vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = event.buf, desc = 'Signature Documentation' })
           vim.keymap.set('i', '<C-S-k>', vim.lsp.buf.hover, { buffer = event.buf, desc = 'Hover Documentation' })
 
