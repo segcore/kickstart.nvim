@@ -3,6 +3,7 @@ local function check_for_header(path, bufnr)
     if string.match(content, "^```plantuml") then
         return 'plantuml'
     end
+    return 'markdown'
 end
 vim.schedule(function()
     vim.filetype.add({
