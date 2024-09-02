@@ -1045,6 +1045,18 @@ require('lazy').setup({
   -- https://github.com/kdheepak/lazygit.nvim
   -- { 'kdheepak/lazygit.nvim' },
 
+  {
+    'roman/golden-ratio',
+    init = function()
+      vim.g.golden_ratio_autocommand = 0
+      -- Mnemonic: - is next to =, but instead of resizing equally, all windows are
+      -- resized to focus on the current.
+      -- 0 is next to -
+      vim.keymap.set('n', '<C-w>-', '<Plug>(golden_ratio_resize)<CR>', { desc = "Resize windows to the golden ratio "})
+      vim.keymap.set('n', '<C-w>0', ':GoldenRatioToggle<CR>', { desc = "Toggle automatic window resizing"})
+    end,
+  },
+
   -- require 'kickstart.plugins.autoformat',
   require 'segcore.plugins.debug',
 
