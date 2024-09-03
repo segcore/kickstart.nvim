@@ -980,10 +980,13 @@ require('lazy').setup({
       view = {
         side = "right",
         width = 43,
+        preserve_window_proportions = true,
       },
       actions = {
         open_file = {
           quit_on_open = true,
+          resize_window = false,
+          window_picker = { enable = false },
         },
       },
     },
