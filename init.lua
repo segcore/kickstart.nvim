@@ -1042,8 +1042,51 @@ require('lazy').setup({
     },
   },
 
-  -- Possibly for paste-selection next/forward
-  -- https://github.com/gbprod/yanky.nvim
+  -- Put-text extensions.
+  -- e.g. Paste with previous/next register keymaps (active after the text is pasted)
+  {
+    'gbprod/yanky.nvim',
+    config = function()
+      require('yanky').setup({
+        ring = {
+          history_length = 20,
+        },
+        system_clipboard = {
+          sync_with_ring = false, -- Sync takes a little time
+        },
+        highlight = {
+          on_put = false,
+          on_yank = false,
+          timer = 100,
+        },
+        textobj = { -- yanky.last_put() text object
+          enabled = false,
+        },
+      })
+
+      vim.keymap.set({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
+      vim.keymap.set({ "n", "x" }, "P", "<Plug>(YankyPutBefore)")
+      vim.keymap.set({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)")
+      vim.keymap.set({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)")
+
+      vim.keymap.set("n", "<C-p>", "<Plug>(YankyPreviousEntry)")
+      vim.keymap.set("n", "<C-n>", "<Plug>(YankyNextEntry)")
+
+      -- Linewise put before and after
+      vim.keymap.set("n", "]p", "<Plug>(YankyPutIndentAfterLinewise)", { desc = 'Put after line' })
+      vim.keymap.set("n", "]P", "<Plug>(YankyPutIndentAfterLinewise)", { desc = 'Put after line' })
+      vim.keymap.set("n", "[p", "<Plug>(YankyPutIndentBeforeLinewise)", { desc = 'Put before line' })
+      vim.keymap.set("n", "[P", "<Plug>(YankyPutIndentBeforeLinewise)", { desc = 'Put before line' })
+
+      -- These only work if you're quick (within 'timeoutlen'). Otherwise it enters operator-pending mode.
+      vim.keymap.set("n", ">p", "<Plug>(YankyPutIndentAfterShiftRight)", { desc = 'Put after, indent >' })
+      vim.keymap.set("n", "<p", "<Plug>(YankyPutIndentAfterShiftLeft)", { desc = 'Put after, indent <' })
+      vim.keymap.set("n", ">P", "<Plug>(YankyPutIndentBeforeShiftRight)", { desc = 'Put before, indent >' })
+      vim.keymap.set("n", "<P", "<Plug>(YankyPutIndentBeforeShiftLeft)", { desc = 'Put before, indent <' })
+      vim.keymap.set("n", "=p", "<Plug>(YankyPutAfterFilter)", { desc = 'Put after, indent auto' })
+      vim.keymap.set("n", "=P", "<Plug>(YankyPutBeforeFilter)", { desc = 'Put before, indent auto' })
+    end,
+  },
 
   -- https://github.com/kdheepak/lazygit.nvim
   -- { 'kdheepak/lazygit.nvim' },
