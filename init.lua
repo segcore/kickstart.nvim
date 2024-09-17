@@ -53,7 +53,7 @@ vim.opt.signcolumn = 'yes'
 
 -- Decrease update time
 vim.opt.updatetime = 250
-vim.opt.timeoutlen = 300
+vim.opt.timeoutlen = 1000 -- Large enough for =p >p etc in yanky.nvim
 
 vim.opt.splitright = true
 -- vim.opt.splitbelow = true
@@ -178,8 +178,9 @@ vim.cmd([[
   vnoremap < <gv
   vnoremap > >gv
 
-  hi eolSpace ctermbg=238 guibg=#e6e6e6 guifg=#bbbbbb
+  highlight eolSpace ctermbg=238 guibg=#e6e6e6 guifg=#bbbbbb
   match eolSpace /\s\+$/
+  highlight Folded guibg=#eeeef5 guifg=#aaaaaa
 ]])
 
 -- Window resizing
@@ -312,6 +313,13 @@ require('lazy').setup({
       hi LspReferenceWrite guibg=#88e39e
       ]])
     end,
+    opts = {
+      integrations = {
+        -- harpoon = true,
+        mason = true,
+        nvim_surround = true,
+      },
+    },
   },
 
   -- Fuzzy Finder (files, lsp, etc)
@@ -426,7 +434,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = true,
-        theme = 'auto',
+        theme = 'catppuccin',
         component_separators = '|',
         section_separators = '',
       },
@@ -765,10 +773,12 @@ require('lazy').setup({
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-nvim-lsp-signature-help',
       'rafamadriz/friendly-snippets',
+      'onsails/lspkind.nvim',
     },
     config = function()
-      local cmp = require 'cmp'
-      local luasnip = require 'luasnip'
+      local cmp = require('cmp')
+      local luasnip = require('luasnip')
+      local lspkind = require('lspkind') -- Symbols on the completion menu
       require('luasnip.loaders.from_vscode').lazy_load()
       luasnip.config.setup {}
 
@@ -805,8 +815,6 @@ require('lazy').setup({
           },
           ['<C-l>'] = cmp.mapping(next_snippet_node, { 'i', 's' }),
           ['<C-h>'] = cmp.mapping(prev_snippet_node, { 'i', 's' }),
-          -- ['<Tab>'] = cmp.mapping(next_snippet_node, { 'i', 's' }),
-          -- ['<S-Tab>'] = cmp.mapping(prev_snippet_node, { 'i', 's' }),
         },
         sources = {
           { name = 'nvim_lsp_signature_help' }, -- show the parameter type and name when inserting
@@ -815,6 +823,20 @@ require('lazy').setup({
           { name = 'path' },
           { name = 'buffer' },
           { name = 'lazydev', group_index = 0 }, -- group_index 0 skips loading LuaLS completions
+        },
+        formatting = {
+          format = lspkind.cmp_format({
+            menu = {
+              nvim_lsp_signature_help = "[Sig]",
+              nvim_lsp = "[LSP]",
+              luasnip = "[LuaSnip]",
+              path = "[Path]",
+              buffer = "[Buffer]",
+              lazydev = "[Lazydev]",
+            },
+          }),
+          fields = { 'abbr', 'kind', 'menu' },
+          expandable_indicator = true,
         },
       }
     end,
