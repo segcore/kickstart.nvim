@@ -159,6 +159,7 @@ vim.keymap.set({'n', 'v'}, '<leader>c', '"_c', { desc = 'Change (no registers)' 
 
 -- Use ctrl-/ to hide the search results after a search (e.g. from /).
 vim.keymap.set('n', '<C-_>', '<cmd>nohlsearch<CR>', { desc = 'Hide search results' })
+vim.keymap.set('n', '<C-/>', '<cmd>nohlsearch<CR>', { desc = 'Hide search results' })
 -- visually select the last yanked or inserted text
 vim.keymap.set('n', 'gy', "`[v`]", { desc = "Select last inserted or yanked text" })
 
