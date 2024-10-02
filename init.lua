@@ -20,7 +20,7 @@ vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = true
 vim.g.is_wsl = vim.fn.has('wsl') == 1
 
--- [[ Setting options ]]
+------------ [[ Setting options ]]
 
 -- Set highlight on search
 vim.opt.hlsearch = true
@@ -92,7 +92,7 @@ vim.opt.foldmethod = "marker"
 vim.opt.foldmarker = "{,}"
 vim.opt.foldlevel = 100
 
--- [[ Clip board ]]
+------------ [[ Clipboard ]]
 -- Immediately set clipboard on Windows, to not delay startup time
 -- Taken from /usr/local/share/nvim/runtime/autoload/provider/clipboard.vim
 if vim.fn.has('wsl') == 1 then
@@ -122,9 +122,9 @@ end
 vim.cmd.packadd('cfilter')
 
 
--- [[ Basic Keymaps ]]
+------------ [[ Keymaps ]]
 
--- Self descriptive
+-- Misc
 vim.keymap.set('n', '<leader>hh', function()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({}))
 end, { desc = 'Toggle inlay hints' })
@@ -145,6 +145,13 @@ vim.keymap.set('n', '<leader>F', '<cmd>let @+=@%<CR>', { desc = 'Copy filename t
 vim.keymap.set('n', 'gX', function() vim.ui.open(vim.api.nvim_buf_get_name(0)) end, { desc = 'Open current file with extenal program' })
 vim.keymap.set('n', '<leader>l', '<cmd>.lua<CR>', { desc = 'Run current line as Lua code' })
 vim.keymap.set('v', '<leader>l', [[<Esc><cmd>'<,'>lua<CR>]], { desc = 'Run selected lines as Lua code' })
+vim.keymap.set('n', '^', '<cmd>ClangdSwitchSourceHeader<CR>', { desc = 'Switch between source and header' })
+
+-- Delete without cutting to registers
+vim.keymap.set({'n', 'v'}, '<leader>d', '"_d', { desc = 'Delete (no registers)' })
+vim.keymap.set({'n', 'v'}, '<leader>x', '"_x', { desc = 'Delete char (no regiters)' })
+vim.keymap.set({'n', 'v'}, '<leader>c', '"_c', { desc = 'Change (no registers)' })
+
 
 -- Remap for word wrap
 -- vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
@@ -243,7 +250,7 @@ end)(), { desc = "Set errorformat for boost::test" })
 
 
 
--- [[ Auto commands ]]
+------------ [[ Auto commands ]]
 --  See `:help lua-guide-autocommands`
 
 -- Highlight on yank
@@ -256,7 +263,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 
--- [[ Install `lazy.nvim` plugin manager ]]
+------------ [[ Install `lazy.nvim` plugin manager ]]
 --  :help lazy.nvim.txt or https://github.com/folke/lazy.nvim
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
@@ -271,10 +278,7 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- [[ Configure and install plugins ]]
---
---  To check the current status of your plugins, run
---    :Lazy
+------------ [[ Configure and install plugins ]]
 require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
 
@@ -634,9 +638,9 @@ require('lazy').setup({
 
           -- This is now the default in neovim v0.10+
           -- nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-          nmap('<C-S-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+          nmap('<C-K>', vim.lsp.buf.signature_help, 'Signature Documentation')
           vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = event.buf, desc = 'Signature Documentation' })
-          vim.keymap.set('i', '<C-S-k>', vim.lsp.buf.hover, { buffer = event.buf, desc = 'Hover Documentation' })
+          vim.keymap.set('i', '<C-K>', vim.lsp.buf.hover, { buffer = event.buf, desc = 'Hover Documentation' })
 
           -- Lesser used LSP functionality
           nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -1127,6 +1131,24 @@ require('lazy').setup({
       -- 0 is next to -
       vim.keymap.set('n', '<C-w>-', '<Plug>(golden_ratio_resize)<CR>', { desc = "Resize windows to the golden ratio "})
       vim.keymap.set('n', '<C-w>0', ':GoldenRatioToggle<CR>', { desc = "Toggle automatic window resizing"})
+    end,
+  },
+
+  {
+    'amitds1997/remote-nvim.nvim',
+    enabled = false,
+    version = "*",                     -- Pin to GitHub releases
+    dependencies = {
+      "nvim-lua/plenary.nvim",         -- For standard functions
+      "MunifTanjim/nui.nvim",          -- To build the plugin UI
+      "nvim-telescope/telescope.nvim", -- For picking b/w different remote methods
+    },
+    config = true,
+    build = function()
+      local devpod = vim.fn.exepath('devpod')
+      if not devpod then
+        print('NOTE: remote-nvim requires devpod for devcontainers')
+      end
     end,
   },
 
