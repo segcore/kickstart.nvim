@@ -148,9 +148,9 @@ vim.keymap.set('v', '<leader>l', [[<Esc><cmd>'<,'>lua<CR>]], { desc = 'Run selec
 vim.keymap.set('n', '^', '<cmd>ClangdSwitchSourceHeader<CR>', { desc = 'Switch between source and header' })
 
 -- Delete without cutting to registers
-vim.keymap.set({'n', 'v'}, '<leader>d', '"_d', { desc = 'Delete (no registers)' })
+-- vim.keymap.set({'n', 'v'}, '<leader>d', '"_d', { desc = 'Delete (no registers)' })
 vim.keymap.set({'n', 'v'}, '<leader>x', '"_x', { desc = 'Delete char (no regiters)' })
-vim.keymap.set({'n', 'v'}, '<leader>c', '"_c', { desc = 'Change (no registers)' })
+-- vim.keymap.set({'n', 'v'}, '<leader>c', '"_c', { desc = 'Change (no registers)' })
 
 
 -- Remap for word wrap
@@ -639,9 +639,9 @@ require('lazy').setup({
 
           -- This is now the default in neovim v0.10+
           -- nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-          nmap('<C-K>', vim.lsp.buf.signature_help, 'Signature Documentation')
+          nmap('<C-S-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
           vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = event.buf, desc = 'Signature Documentation' })
-          vim.keymap.set('i', '<C-K>', vim.lsp.buf.hover, { buffer = event.buf, desc = 'Hover Documentation' })
+          vim.keymap.set('i', '<C-S-k>', vim.lsp.buf.hover, { buffer = event.buf, desc = 'Hover Documentation' })
 
           -- Lesser used LSP functionality
           nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -750,7 +750,7 @@ require('lazy').setup({
               local settings = servers[server_name] or {}
               settings.capabilities = vim.tbl_deep_extend('force', {}, capabilities, settings.capabilities or {})
               settings.on_attach = settings.on_attach or on_attach
-              require('lspconfig')[server_name].setup(settings)
+              server.setup(settings)
             else
               print("Unhandled server " .. server_name)
             end
