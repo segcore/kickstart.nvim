@@ -132,7 +132,7 @@ vim.keymap.set('n', '<leader>hi', function()
   vim.cmd([[tabedit $MYVIMRC
   tcd %:h]])
 end, { desc = 'Edit neovim config in a new tab' })
-vim.keymap.set('n', '<leader>h.', function()
+vim.keymap.set('n', '<leader>s.', function()
   vim.cmd([[tabedit ~/.dotfiles/setup.sh
   tcd %:h]])
   require('telescope.builtin').find_files()
@@ -371,8 +371,8 @@ require('lazy').setup({
           use_less = false,
           mappings = {
             i = {
-              ['<C-u>'] = false,
-              ['<C-d>'] = false,
+              ["<C-j>"] = require('telescope.actions').cycle_history_next,
+              ["<C-k>"] = require('telescope.actions').cycle_history_prev,
             },
           },
         },
@@ -406,7 +406,8 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>gB', bi.git_branches, { desc = 'Telescope: git branches' })
       vim.keymap.set('n', '<leader>gf', bi.git_files, { desc = 'Search [G]it [F]iles' })
       vim.keymap.set('n', '<leader>sf', ww(bi.find_files, { hidden = true }), { desc = '[S]earch [F]iles' })
-      vim.keymap.set('n', '<leader>sF', ww(bi.find_files, { hidden = true, no_ignore = true, no_ignore_parent = true }),
+      vim.keymap.set('n', '<leader>sF', ww(bi.find_files,
+          { prompt_title = 'Find All Files', hidden = true, no_ignore = true, no_ignore_parent = true }),
         { desc = '[S]earch [F]iles, include ignored' })
       vim.keymap.set('n', '<leader>sh', bi.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', bi.keymaps, { desc = '[S]earch [K]eymaps' })
@@ -416,8 +417,12 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>ss', bi.treesitter, { desc = '[S]earch tree-sitter [S]ymbols' })
       vim.keymap.set('n', '<leader>sm', ww(bi.man_pages, { sections = { "ALL" } }), { desc = '[S]earch [M]an-pages' })
       vim.keymap.set('n', '<leader>sg', bi.live_grep, { desc = '[S]earch by [G]rep' })
-      vim.keymap.set('n', '<leader>sG', ww(bi.live_grep, { additional_args = { '--case-sensitive' } }),
+      vim.keymap.set('n', '<leader>sG', ww(bi.live_grep,
+          { prompt_title = 'Live Grep (case sensitive)', additional_args = { '--case-sensitive' } }),
         { desc = '[S]earch by [G]rep (case sensitive)' })
+      vim.keymap.set('n', '<leader>sa', ww(bi.live_grep,
+          { prompt_title = 'Live Grep all files', additional_args = { '--no-ignore', '--hidden' } }),
+        { desc = '[S]earch [A]ll files by grep' })
       vim.keymap.set('n', '<leader>sd', bi.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', bi.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s"', bi.registers, { desc = '[S]earch registers' })
@@ -430,8 +435,8 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>si', ww(bi.find_files, { cwd = vim.fn.stdpath('config') }),
         { desc = '[S]earch neovim configuration' })
       vim.keymap.set('n', '<leader>s/', ww(bi.live_grep, {
-        grep_open_files = true,
         prompt_title = 'Live Grep in Open Files',
+        grep_open_files = true,
       }), { desc = '[S]earch [/] in Open Files' })
     end
   },
@@ -495,9 +500,65 @@ require('lazy').setup({
       ignore_install = {},
 
       -- Add languages to be installed here that you want installed for treesitter
-      ensure_installed = { 'c', 'cpp', 'lua', 'vim', 'vimdoc', 'bash', 'html', 'markdown' },
+      ensure_installed = {
+        'asm',
+        'awk',
+        'bash',
+        'bitbake',
+        'c',
+        'cmake',
+        'cpp',
+        'cpp',
+        'css',
+        'csv',
+        'diff',
+        'dockerfile',
+        'dot',
+        'git_config',
+        'git_rebase',
+        'gitattributes',
+        'gitcommit',
+        'gitignore',
+        'go',
+        'haskell',
+        'html',
+        'html',
+        'ini',
+        'java',
+        'javascript',
+        'jq',
+        'jsdoc',
+        'json',
+        'json5',
+        'jsonc',
+        'kotlin',
+        'lua',
+        'luadoc',
+        'make',
+        'markdown',
+        'ninja',
+        'ocaml',
+        'odin',
+        'passwd',
+        'php',
+        'printf',
+        'proto',
+        'regex',
+        'rust',
+        'sql',
+        'ssh_config',
+        'strace',
+        'tmux',
+        'toml',
+        'typescript',
+        'vim',
+        'vimdoc',
+        'xml',
+        'yaml',
+        'zig',
+      },
 
-      -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
+      -- Autoinstall languages that are not installed.
       auto_install = false,
 
       highlight = { enable = true },
@@ -1013,6 +1074,9 @@ require('lazy').setup({
         side = "right",
         width = 43,
         preserve_window_proportions = true,
+      },
+      filters = {
+        git_ignored = false,
       },
       actions = {
         open_file = {
