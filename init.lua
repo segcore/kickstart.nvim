@@ -144,6 +144,7 @@ vim.keymap.set('n', 'N', 'Nzz', { desc = 'prev search and center' })
 vim.keymap.set('n', '<leader>F', '<cmd>let @+=@%<CR>', { desc = 'Copy filename to clipboard' })
 vim.keymap.set('n', 'gX', function() vim.ui.open(vim.api.nvim_buf_get_name(0)) end, { desc = 'Open current file with extenal program' })
 vim.keymap.set('n', '<leader>l', '<cmd>.lua<CR>', { desc = 'Run current line as Lua code' })
+vim.keymap.set('n', '<leader>L', '<cmd>%lua<CR>', { desc = 'Run the current file as Lua code' })
 vim.keymap.set('v', '<leader>l', [[<Esc><cmd>'<,'>lua<CR>]], { desc = 'Run selected lines as Lua code' })
 vim.keymap.set('n', '^', '<cmd>ClangdSwitchSourceHeader<CR>', { desc = 'Switch between source and header' })
 
@@ -416,12 +417,12 @@ require('lazy').setup({
         { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>ss', bi.treesitter, { desc = '[S]earch tree-sitter [S]ymbols' })
       vim.keymap.set('n', '<leader>sm', ww(bi.man_pages, { sections = { "ALL" } }), { desc = '[S]earch [M]an-pages' })
-      vim.keymap.set('n', '<leader>sg', bi.live_grep, { desc = '[S]earch by [G]rep' })
+      vim.keymap.set('n', '<leader>sg', ww(bi.live_grep, { additional_args = { '--hidden', '-g', '!\\.git' } }), { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sG', ww(bi.live_grep,
-          { prompt_title = 'Live Grep (case sensitive)', additional_args = { '--case-sensitive' } }),
+          { prompt_title = 'Live Grep (case sensitive)', additional_args = { '--hidden', '--case-sensitive' } }),
         { desc = '[S]earch by [G]rep (case sensitive)' })
       vim.keymap.set('n', '<leader>sa', ww(bi.live_grep,
-          { prompt_title = 'Live Grep all files', additional_args = { '--no-ignore', '--hidden' } }),
+          { prompt_title = 'Live Grep all files', additional_args = { '--hidden', '--no-ignore' } }),
         { desc = '[S]earch [A]ll files by grep' })
       vim.keymap.set('n', '<leader>sd', bi.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', bi.resume, { desc = '[S]earch [R]esume' })
