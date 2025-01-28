@@ -2,7 +2,7 @@ local M = {}
 
 local parse_line = function(result, input_line)
   local file_pattern = '([-_/%w%.]+)'
-  local words = '([-_/%w%.`"\', :]+)'
+  local words = '([^<]*)'
   local pattern = '<span class="pos">' .. file_pattern .. ':(%d+).(%d+)-(%d+).(%d+):'
     .. '</span></a><button class="preview%-button"></button> <span class="reports%-message">'
     .. words
