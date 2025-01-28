@@ -1,5 +1,13 @@
 local M = {}
 
+local html_unescape = function(text)
+  text = string.gsub(text, '&lt;', '<')
+  text = string.gsub(text, '&gt;', '>')
+  text = string.gsub(text, '&amp;', '&')
+  text = string.gsub(text, '&nbsp;', ' ')
+  return text
+end
+
 local parse_line = function(result, input_line)
   local file_pattern = '([-_/%w%.]+)'
   local words = '([^<]*)'
@@ -15,7 +23,7 @@ local parse_line = function(result, input_line)
       col = col1,
       end_col = col2,
       valid = true,
-      text = text,
+      text = html_unescape(text),
     })
   end
 end
@@ -41,6 +49,7 @@ vim.keymap.set('n', '<leader>M', function() parse_file_to_qf(0) end,
   { desc = 'Quickfix: Misra from current file' })
 
 M._parse_line = parse_line
+M.html_unescape = html_unescape
 M.parse_file_to_table = parse_file_to_table
 M.parse_file_to_qf = parse_file_to_qf
 return M
