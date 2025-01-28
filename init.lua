@@ -458,7 +458,7 @@ require('lazy').setup({
         lualine_c = {
           { 'filename', path = 1 },
         },
-        lualine_x = { 'searchcount', 'filesize', 'encoding', 'fileformat', 'filetype' },
+        lualine_x = { 'filesize', 'encoding', 'fileformat', 'filetype' },
         lualine_z = { 'selectioncount', 'location' }
       },
     },
