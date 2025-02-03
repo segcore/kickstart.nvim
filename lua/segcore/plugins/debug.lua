@@ -8,6 +8,7 @@ return {
       "williamboman/mason.nvim",
       "jay-babu/mason-nvim-dap.nvim",
       "jbyuki/one-small-step-for-vimkind", -- lua
+      'neovim/nvim-lspconfig', -- To get the dependencies done in the right order
     },
     config = function()
       local dap = require "dap"
@@ -17,16 +18,44 @@ return {
 
       require("nvim-dap-virtual-text").setup()
 
-      vim.keymap.set("n", "<leader>dc", dap.run_to_cursor)
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'dap-float',
+        callback = function()
+          vim.schedule(function ()
+            vim.keymap.set('n', 'q', '<cmd>fclose<CR>', { buffer = 0 })
+          end)
+        end
+      })
+
+      vim.keymap.set("n", "<leader>dc", dap.run_to_cursor, { desc = 'Debug: Run to cursor' })
       vim.keymap.set('n', '<leader>db', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
       vim.keymap.set('n', '<leader>dB', function()
         dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
       end, { desc = 'Debug: Set Breakpoint with condition' })
+      vim.keymap.set('n', '<Leader>dr', function() require('dap').repl.open() end, { desc = 'Debug: open REPL'} )
+      vim.keymap.set('n', '<Leader>dl', function() require('dap').run_last() end, { desc = 'Debug: run last' })
+      vim.keymap.set('n', '<Leader>dg', function() require('dap').set_breakpoint(nil, nil, vim.fn.input('Log point message: ')) end, { desc = 'Debug: log point' })
+
+      vim.keymap.set({ 'n', 'v' }, '<Leader>dh', function()
+        require('dap.ui.widgets').hover()
+      end, { desc = 'Debug: Hover' })
+      vim.keymap.set({ 'n', 'v' }, '<Leader>dp', function()
+        require('dap.ui.widgets').preview()
+      end, { desc = 'Debug: Preview in Pane' })
+      vim.keymap.set('n', '<Leader>df', function()
+        local widgets = require('dap.ui.widgets')
+        widgets.centered_float(widgets.frames)
+      end, { desc = 'Debug: Stack frames' })
+      vim.keymap.set('n', '<Leader>dv', function()
+        local widgets = require('dap.ui.widgets')
+        widgets.centered_float(widgets.scopes)
+      end, { desc = 'Debug: Variables in scopes' })
+      vim.keymap.set('n', '<Leader>dq', function() dap.list_breakpoints(true) end, { desc = 'Debug: List breakpoints' })
 
       -- Eval var under cursor
-      vim.keymap.set("n", "<leader>d<space>", function()
-        require("dapui").eval(nil, { enter = true })
-      end)
+      vim.keymap.set("n", "<leader>dd", function()
+        require("dapui").eval()
+      end, { desc = 'Debug: Evaluate' })
 
       vim.keymap.set("n", "<F1>", dap.continue, { desc = 'Debug: continue' })
       vim.keymap.set("n", "<F2>", dap.step_into, { desc = 'Debug: step into' })

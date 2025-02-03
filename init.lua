@@ -748,6 +748,7 @@ require('lazy').setup({
             "c", "cpp", "objc", "objcpp", "cuda"
           },
         },
+        ols = {},
         -- gopls = {},
         pylsp = {
           settings = {
