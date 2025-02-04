@@ -22,6 +22,9 @@ vim.g.is_wsl = vim.fn.has('wsl') == 1
 
 ------------ [[ Setting options ]]
 
+-- Load trusted .nvim.lua files on startup
+vim.opt.exrc = true
+
 -- Set highlight on search
 vim.opt.hlsearch = true
 
