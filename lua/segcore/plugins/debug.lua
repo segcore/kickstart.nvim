@@ -10,6 +10,7 @@ return {
       "jbyuki/one-small-step-for-vimkind", -- lua
       'neovim/nvim-lspconfig', -- To get the dependencies done in the right order
     },
+    event = 'VeryLazy',
     config = function()
       local dap = require "dap"
       local ui = require "dapui"
